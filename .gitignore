@@ -1,5 +1,7 @@
 *~
 .metadata
+.dep
+build
 bin/
 tmp/
 *.tmp
