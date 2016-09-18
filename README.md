@@ -77,4 +77,30 @@ For this setup, power is provided to the maple mini by its own USB connection, s
     monitor flash write_bank 0 /src/chibios-maple-mini-basic/build/ch.bin 0
     monitor reset halt
     ```
-    
+
+### Serial Port Setup
+
+This demo app has a serial console that's available over the USB serial interface. In order to get Linux to properly recognize the device, do the following:
+
+1. As root, create the file /etc/udev/rules.d/49-chibios.rules with the following content:
+
+  ```
+  # 0483:5740 f055:9800 - ChibiOS Maple Mini
+  ATTRS{idVendor}=="0483", ATTRS{idProduct}=="5740", ENV{ID_MM_DEVICE_IGNORE}="1"
+  ATTRS{idVendor}=="0483", ATTRS{idProduct}=="5740", ENV{MTP_NO_PROBE}="1"
+  SUBSYSTEMS=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="5740", MODE:="0666"
+  KERNEL=="ttyACM*", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="5740", MODE:="0666"
+  ```
+2. Run the following command:
+
+  ```
+  sudo udevadm control --reload-rules
+  ```
+
+3. Start the minicom terminal program as follows. If the device is not being added as ACM0, then check /var/log/syslog to see which device it was added as.
+
+  ```
+  minicom -o -D /dev/ttyACM0
+  ```
+4. You must enter a carriage return before the console will respond
+
